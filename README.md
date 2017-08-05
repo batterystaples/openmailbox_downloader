@@ -4,9 +4,13 @@ Save a local copy of your openmailbox emails without using IMAP
 ## Motivation
 Today, in August 2017, [openmailbox.org](https://openmailbox.org) has changed its service by requiring people to pay for IMAP. No warning was given for this, and I have not been able to find a simple way to download all of my emails from the server.
 
-## How this tool works
-This tool requires Python 3.
+## Dependencies
+For this tool to work, you need to install Python 3, and the module listed in requirements.txt.
 
+If you have pip installed, you can do this with the command:
+`pip3 install -r requirements.txt`
+
+## How this tool works
 To use this tool, you need to [log in to openmailbox's webmail](https://app.openmailbox.org/login).
 
 Then, you will need to view the cookies that openmailbox has put on your computer. In particular, you will need to find the _sessionid_ and the _csrftoken_.
@@ -16,7 +20,7 @@ Then, you need to run this command:
 
 where _csrftoken_ and _sessionid_ are the two cookies you found earlier, mailbox is the folder you want to download from (usually 'INBOX') and lowerbound and upperbound are the lowest and highest number messages you want respectively.
 
-Note that you can only download a maximum of 500 messages each time you run this script. So, if you have more than 500 messages in a folder, you will have to run in multiple times, changing the upperbound and lowerbound values on each run.
+Note that you can only download a maximum of 500 messages each time you run this script. So, if you have more than 500 messages in a folder, you will have to run it multiple times, changing the upperbound and lowerbound values on each run.
 
 The saved emails will be in the folder emails_output_dir.
 
