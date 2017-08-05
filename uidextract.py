@@ -37,11 +37,14 @@ os.makedirs('emails_output_dir', exist_ok=True)
 print("Created directory emails_output_dir if it didn't already exist")
 
 for uid in uids:
-	req = request.Request('https://app.openmailbox.org/requests/webmail?mailbox='+mailbox+'&uid='+str(uid)+'&action=downloadmessage')
-	req.add_header('Cookie', 'csrftoken='+csrftoken+'; sessionid='+sessionid)
-	resp = request.urlopen(req)
+	if not os.path.isfile('emails_output_dir/'+str(uid)+".eml"):
+		req = request.Request('https://app.openmailbox.org/requests/webmail?mailbox='+mailbox+'&uid='+str(uid)+'&action=downloadmessage')
+		req.add_header('Cookie', 'csrftoken='+csrftoken+'; sessionid='+sessionid)
+		resp = request.urlopen(req)
 
-	output = open("emails_output_dir/"+str(uid)+".eml",'w')
-	output.write(resp.read().decode('utf-8'))
-	output.close()
-	print("Saved message " + str(uid))
+		output = open("emails_output_dir/"+str(uid)+".eml",'w')
+		output.write(resp.read().decode('utf-8'))
+		output.close()
+		print("Saved message " + str(uid))
+	else:
+		print("Already downloaded " + str(uid))
