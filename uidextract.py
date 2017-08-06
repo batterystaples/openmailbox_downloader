@@ -41,23 +41,51 @@ def get_emails(csrftoken, sessionid, mailbox, lowerbound, upperbound):
         else:
             print("Already downloaded " + str(uid))
 
+def list_folders(csrftoken, sessionid):
+    print("Getting list of folders")
+    # Create a session object from requests library
+    s = requests.Session()
+    retries = Retry(total=10, backoff_factor=1,
+                    status_forcelist=[500, 502, 504])
+    s.mount('https://', HTTPAdapter(max_retries=retries))
+    s.headers.update({'Cookie': 'csrftoken={0};'
+                      'sessionid={1}'.format(csrftoken, sessionid)})
+    mdatareq = 'https://app.openmailbox.org/requests/webmail?action=folderlist'
+    print(mdatareq)
+
+    metadata = json.loads(s.get(mdatareq).text)
+    print(metadata)
+
+    print('\nFolder names:')
+    for line in metadata['folders']:
+        print(line['name'])
 
 if __name__ == '__main__':
-    csrftoken = sys.argv[1]
-    sessionid = sys.argv[2]
-    mailbox = sys.argv[3]
-    lowerbound = sys.argv[4]
-    upperbound = sys.argv[5]
+    if len(sys.argv) == 3:
+        csrftoken = sys.argv[1]
+        sessionid = sys.argv[2]
 
-    if int(upperbound) <= int(lowerbound):
-        print("The lower bound must be less than than the upper bound")
+        list_folders(csrftoken, sessionid)
+
+    elif len(sys.argv) == 6:
+        csrftoken = sys.argv[1]
+        sessionid = sys.argv[2]
+        mailbox = sys.argv[3]
+        lowerbound = sys.argv[4]
+        upperbound = sys.argv[5]
+
+        if int(upperbound) <= int(lowerbound):
+            print("The lower bound must be less than than the upper bound")
+            exit()
+        if int(upperbound) - int(lowerbound) > 500:
+            print('The difference between the upper bound and the lower'
+                  'bound must be less than or equal to 500.')
+            exit()
+
+        get_emails(csrftoken, sessionid, mailbox, lowerbound, upperbound)
+
+    else:
+        print('Syntax:')
+        print('For listing folders\n\t./uidextract.py <csrftoken> <sessionid> ')
+        print('For getting emails\n\t./uidextract.py <csrftoken> <sessionid> <mailbox> <lowerbound> <upperbound>')
         exit()
-    if int(upperbound) - int(lowerbound) > 500:
-        print('The difference between the upper bound and the lower'
-              'bound must be less than or equal to 500.')
-        exit()
-    if len(sys.argv) != 6:
-        print('Syntax: ./uidextract.py <csrftoken> <sessionid>'
-              '<mailbox> <lowerbound> <upperbound>')
-        exit()
-    get_emails(csrftoken, sessionid, mailbox, lowerbound, upperbound)
