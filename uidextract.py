@@ -31,15 +31,16 @@ def get_emails(csrftoken, sessionid, mailbox, lowerbound, upperbound):
     print("Created directory emails_output_dir if it didn't already exist")
 
     for uid in uids:
-        if not os.path.isfile('emails_output_dir/' + str(uid) + ".eml"):
+        fname = 'emails_output_dir/' + str(mailbox) + '-' + str(uid) + ".eml"
+        if not os.path.isfile(fname):
             req = 'https://app.openmailbox.org/requests/webmail?mailbox={0}&uid={1}&action=downloadmessage'.format(mailbox, str(uid))
             resp = s.get(req, stream=True)
-            with open('emails_output_dir/' + str(uid) + '.eml', 'wb') as eml:
+            with open(fname, 'wb') as eml:
                 for chunk in resp:
                     eml.write(chunk)
-            print("Saved message " + str(uid))
+            print("Saved message " + fname)
         else:
-            print("Already downloaded " + str(uid))
+            print("Already downloaded " + fname)
 
 def list_folders(csrftoken, sessionid):
     print("Getting list of folders")
