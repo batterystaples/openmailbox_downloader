@@ -76,7 +76,7 @@ if __name__ == '__main__':
         upperbound = sys.argv[5]
 
         if int(upperbound) <= int(lowerbound):
-            print("The lower bound must be less than than the upper bound")
+            print("The lower bound must be less than the upper bound")
             exit()
         if int(upperbound) - int(lowerbound) > 500:
             print('The difference between the upper bound and the lower'
